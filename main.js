@@ -124,7 +124,7 @@ const water = new Water(
     {
         textureWidth: 512,
         textureHeight: 512,
-        waterNormals: new THREE.TextureLoader().load('textures/waternormals.jpg', function(texture) {
+        waterNormals: new THREE.TextureLoader().load('/textures/waternormals.jpg', function(texture) {
             texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
         }),
         sunDirection: new THREE.Vector3(),
@@ -160,14 +160,14 @@ let boat;
 const objLoader = new OBJLoader();
 const textureLoader = new THREE.TextureLoader();
 
-objLoader.load('boat.obj', (object) => {
+objLoader.load('/models/boat.obj', (object) => {
     boat = object;
     boat.scale.set(5, 5, 5);
     boat.position.y = 0;
     scene.add(boat);
 
     // Load and apply texture
-    textureLoader.load('boat.png', (texture) => {
+    textureLoader.load('/models/boat.png', (texture) => {
         boat.traverse((child) => {
             if (child instanceof THREE.Mesh) {
                 child.material = new THREE.MeshPhongMaterial({
