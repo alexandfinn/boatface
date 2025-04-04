@@ -1,7 +1,6 @@
 import React, { useRef, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
-import { useCoinStore } from '../store/coinStore'
 
 interface CoinProps {
   id: number
@@ -12,7 +11,6 @@ interface CoinProps {
 }
 
 export const Coin: React.FC<CoinProps> = ({ 
-  id, 
   position, 
   rotationSpeed, 
   bobFrequency, 
@@ -21,7 +19,6 @@ export const Coin: React.FC<CoinProps> = ({
   const coinRef = useRef<THREE.Group>(null)
   const glowRef = useRef<THREE.Mesh>(null)
   const glowMaterialRef = useRef<THREE.MeshBasicMaterial | null>(null)
-  const { updateCoin } = useCoinStore()
   
   // Set initial position
   useEffect(() => {

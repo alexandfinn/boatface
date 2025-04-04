@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useCoinStore } from '../store/coinStore'
 
 export const UI: React.FC = () => {

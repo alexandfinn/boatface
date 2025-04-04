@@ -24,10 +24,7 @@ export const Ocean: React.FC = () => {
   const waterNormals = useLoader(
     THREE.TextureLoader, 
     '/textures/waternormals.jpg',
-    (loader) => {
-      loader.wrapS = THREE.RepeatWrapping
-      loader.wrapT = THREE.RepeatWrapping
-    },
+    undefined,
     (error) => {
       console.error('Error loading water texture:', error)
     }

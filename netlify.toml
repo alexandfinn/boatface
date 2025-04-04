@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build"
+  command = "pnpm run build"
   publish = "dist"
 
 [[redirects]]
@@ -11,9 +11,3 @@
   for = "/*"
     [headers.values]
     Access-Control-Allow-Origin = "*"
-
-[dev]
-  command = "npm run dev"
-  framework = "#custom"
-  port = 5173
-  targetPort = 5173 
