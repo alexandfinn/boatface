@@ -10,4 +10,10 @@
 [[headers]]
   for = "/*"
     [headers.values]
-    Access-Control-Allow-Origin = "*" 
+    Access-Control-Allow-Origin = "*"
+
+[dev]
+  command = "npm run dev"
+  framework = "#custom"
+  port = 5173
+  targetPort = 5173 
