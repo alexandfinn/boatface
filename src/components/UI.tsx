@@ -1,19 +1,142 @@
-import React from 'react'
-import { useCoinStore } from '../store/coinStore'
+import React from "react";
+import { useCoinStore } from "../store/coinStore";
+import { useGameStore, GameMode } from "../store/gameStore";
 
 export const UI: React.FC = () => {
-  const { collectedCount } = useCoinStore()
-  
+  const { collectedCount } = useCoinStore();
+  const {
+    mode,
+    setMode,
+    isPlaying,
+    startGame,
+    endGame,
+    timeRemaining,
+    score,
+    isCountingDown,
+  } = useGameStore();
+
+  // Format time remaining as MM:SS
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+  };
+
+  // Log time remaining for debugging
+  React.useEffect(() => {
+    if (isPlaying && mode === "collect-mrr" && !isCountingDown) {
+      console.log("UI Timer update:", timeRemaining);
+    }
+  }, [timeRemaining, isPlaying, mode, isCountingDown]);
+
+  // Handle game start with selected mode
+  const handleStartGame = (selectedMode: GameMode) => {
+    setMode(selectedMode);
+    startGame();
+  };
+
   return (
     <>
-      <div className="absolute top-4 left-4 p-3 bg-black/50 text-white rounded-md">
+      {/* ZeroToShipped branding in top left */}
+      <div className="absolute top-0 left-0 p-3 bg-black/50 text-white rounded-br-md font-semibold z-10">
+        <a
+          href="https://zerotoshipped.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-white hover:text-yellow-300"
+        >
+          ZeroToShipped.com - The ultimate starter
+        </a>
+      </div>
+
+      {/* Controls help */}
+      <div className="absolute top-4 left-4 mt-12 p-3 bg-black/50 text-white rounded-md">
         <p>Use WASD to move the boat</p>
         <p>Use mouse to look around</p>
       </div>
-      
-      <div className="absolute top-4 right-4 p-3 bg-black/50 text-yellow-400 font-bold rounded-md">
-        <p>${collectedCount} MRR</p>
-      </div>
+
+      {/* Top center score and timer display - only in collect-mrr mode */}
+      {isPlaying && mode === "collect-mrr" && (
+        <div className="absolute top-6 left-1/2 transform -translate-x-1/2 flex flex-col items-center">
+          <div className="text-3xl font-bold text-yellow-400 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
+            ${score} MRR
+          </div>
+
+          {/* Timer for collect-mrr mode */}
+          <div className="text-2xl font-bold text-white mt-2 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
+            ⏱️ {formatTime(timeRemaining)}
+          </div>
+        </div>
+      )}
+
+      {/* Full-screen overlay when no game is active */}
+      {!isPlaying && (
+        <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
+          <div className="bg-black/80 p-8 rounded-lg max-w-md text-center">
+            <h1 className="text-3xl text-white font-bold mb-6">
+              Boat Simulator
+            </h1>
+
+            <h2 className="text-xl text-white font-bold mb-6">
+              Choose Your Experience
+            </h2>
+
+            <div className="flex flex-col gap-6">
+              <button
+                className="px-8 py-5 rounded-md bg-blue-500 hover:bg-blue-600 text-white font-bold text-xl"
+                onClick={() => handleStartGame("free-roam")}
+              >
+                🚤 Free Roaming
+              </button>
+
+              <div className="relative">
+                <button
+                  className="w-full px-8 py-5 rounded-md bg-yellow-500 hover:bg-yellow-600 text-white font-bold text-xl"
+                  onClick={() => handleStartGame("collect-mrr")}
+                >
+                  💰 Collect MRR Challenge
+                </button>
+
+                <div className="absolute -bottom-20 left-0 right-0 text-white text-sm bg-black/50 p-3 rounded-md">
+                  <p className="mb-1">
+                    60-second challenge to collect as many coins as possible!
+                  </p>
+                  <p className="mb-1">Regular Coins: +$10 MRR</p>
+                  <p>Special Coins: +$50 MRR (Disappear quickly!)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Early end button for collect-mrr mode - only shown when not in countdown */}
+      {isPlaying && mode === "collect-mrr" && !isCountingDown && (
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
+          <button
+            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md font-bold"
+            onClick={endGame}
+          >
+            End Game Early
+          </button>
+        </div>
+      )}
+
+      {/* Game over overlay for collect-mrr mode */}
+      {mode === "collect-mrr" && !isPlaying && score > 0 && (
+        <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center">
+          <h1 className="text-4xl text-white font-bold mb-4">Time's Up!</h1>
+          <p className="text-3xl text-yellow-400 font-bold mb-8">
+            You collected ${score} MRR
+          </p>
+          <button
+            className="px-8 py-4 bg-green-500 hover:bg-green-600 text-white rounded-md font-bold text-xl"
+            onClick={() => handleStartGame("collect-mrr")}
+          >
+            Play Again
+          </button>
+        </div>
+      )}
     </>
-  )
-} 
+  );
+};

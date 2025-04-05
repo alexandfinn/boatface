@@ -21,4 +21,32 @@ body,
   width: 100%;
   height: 100%;
   overflow: hidden;
-} 
+}
+
+#joystick-container {
+  touch-action: none;
+  pointer-events: auto;
+  user-select: none;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+}
+
+/* Make sure joystick is visible on lighter backgrounds */
+.nipple {
+  opacity: 0.8;
+}
+
+.back {
+  background-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.front {
+  background-color: white !important;
+}
+
+@media (max-width: 768px) {
+  #joystick-container {
+    bottom: 50px !important;
+    right: 50px !important;
+  }
+}

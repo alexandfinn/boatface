@@ -1,19 +1,23 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useLoader } from "@react-three/fiber";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import { TextureLoader } from "three";
 import * as THREE from "three";
 import { useBoatStore } from "../store/boatStore";
+import { useGameStore } from "../store/gameStore";
 
 export const Boat: React.FC = () => {
   const boatModel = useLoader(OBJLoader, "/models/boat.obj");
   const boatTexture = useLoader(TextureLoader, "/models/boat.png");
   const boatRef = useRef<THREE.Group>(null);
   const spotlightRef = useRef<THREE.SpotLight>(null);
+  const [isRevving, setIsRevving] = useState(false);
+  const revEffectRef = useRef<THREE.PointLight>(null);
 
   const { keys, position, rotation, updatePosition, updateRotation } =
     useBoatStore();
+  const { isPlaying, isCountingDown, mode, timeRemaining } = useGameStore();
 
   // Apply texture to boat model
   useEffect(() => {
@@ -29,6 +33,13 @@ export const Boat: React.FC = () => {
     }
   }, [boatModel, boatTexture]);
 
+  // Handle engine revving effect
+  useEffect(() => {
+    // Check if gas is pressed (W key)
+    const isGasPressed = keys.w;
+    setIsRevving(isGasPressed);
+  }, [keys.w]);
+
   useFrame(() => {
     if (!boatRef.current) return;
 
@@ -38,24 +49,51 @@ export const Boat: React.FC = () => {
     let newPosition = position.clone();
     let newRotation = rotation.clone();
 
-    // Handle movement
-    if (keys.w) {
-      newPosition.z += Math.cos(rotation.y) * moveSpeed;
-      newPosition.x += Math.sin(rotation.y) * moveSpeed;
+    // Determine if movement is allowed:
+    // 1. Game must be playing
+    // 2. Not in countdown for collect-mrr mode
+    // 3. In collect-mrr mode, time must not be up
+    const isMovementAllowed =
+      isPlaying &&
+      (mode === "free-roam" || (!isCountingDown && timeRemaining > 0));
+
+    if (isMovementAllowed) {
+      // Handle movement
+      if (keys.w) {
+        newPosition.z += Math.cos(rotation.y) * moveSpeed;
+        newPosition.x += Math.sin(rotation.y) * moveSpeed;
+      }
+      if (keys.s) {
+        newPosition.z -= Math.cos(rotation.y) * moveSpeed;
+        newPosition.x -= Math.sin(rotation.y) * moveSpeed;
+      }
+      if (keys.a) {
+        newRotation.y += turnSpeed;
+      }
+      if (keys.d) {
+        newRotation.y -= turnSpeed;
+      }
     }
-    if (keys.s) {
-      newPosition.z -= Math.cos(rotation.y) * moveSpeed;
-      newPosition.x -= Math.sin(rotation.y) * moveSpeed;
-    }
-    if (keys.a) {
-      newRotation.y += turnSpeed;
-    }
-    if (keys.d) {
-      newRotation.y -= turnSpeed;
+
+    // Apply engine revving effect (slight boat shake) even during countdown
+    // but not when game is over
+    if (isRevving && isPlaying) {
+      // Small random shake when engine is revving
+      const shakeAmount = 0.03;
+      boatRef.current.position.y =
+        position.y + (Math.random() - 0.5) * shakeAmount;
+
+      // Increase brightness of rev effect light
+      if (revEffectRef.current) {
+        revEffectRef.current.intensity = 3 + Math.random() * 2;
+      }
+    } else if (revEffectRef.current) {
+      revEffectRef.current.intensity = 0;
     }
 
     // Update boat position and rotation
-    boatRef.current.position.copy(newPosition);
+    boatRef.current.position.x = newPosition.x;
+    boatRef.current.position.z = newPosition.z;
     boatRef.current.rotation.copy(newRotation);
 
     // Update spotlight position
@@ -94,6 +132,19 @@ export const Boat: React.FC = () => {
       >
         <object3D position={[0, 0, 0]} /> {/* Target for the spotlight */}
       </spotLight>
+
+      {/* Engine rev effect (glow at the back of the boat) */}
+      <pointLight
+        ref={revEffectRef}
+        position={[
+          position.x - Math.sin(rotation.y) * 3,
+          position.y + 0.5,
+          position.z - Math.cos(rotation.y) * 3,
+        ]}
+        color="#ff6600"
+        intensity={0}
+        distance={6}
+      />
 
       <primitive
         ref={boatRef}
