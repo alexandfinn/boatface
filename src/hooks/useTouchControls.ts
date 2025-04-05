@@ -9,9 +9,10 @@ import { useBoatStore } from "../store/boatStore";
 export const useTouchControls = () => {
   const { setKey } = useBoatStore();
   const joystickRef = useRef<JoystickManager | null>(null);
+  const boostButtonRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
-    // Only create joystick on touch devices
+    // Only create mobile controls on touch devices
     if (!("ontouchstart" in window)) return;
 
     // Create joystick container if it doesn't exist
@@ -26,6 +27,42 @@ export const useTouchControls = () => {
       joystickContainer.style.height = "120px";
       joystickContainer.style.zIndex = "9999";
       document.body.appendChild(joystickContainer);
+    }
+
+    // Create boost button if it doesn't exist
+    let boostButton = document.getElementById(
+      "boost-button"
+    ) as HTMLButtonElement;
+    if (!boostButton) {
+      boostButton = document.createElement("button");
+      boostButton.id = "boost-button";
+      boostButton.textContent = "BOOST";
+      boostButton.style.position = "fixed";
+      boostButton.style.bottom = "100px";
+      boostButton.style.left = "100px";
+      boostButton.style.width = "80px";
+      boostButton.style.height = "80px";
+      boostButton.style.borderRadius = "50%";
+      boostButton.style.backgroundColor = "rgba(0, 100, 255, 0.7)";
+      boostButton.style.color = "white";
+      boostButton.style.fontSize = "14px";
+      boostButton.style.fontWeight = "bold";
+      boostButton.style.border = "none";
+      boostButton.style.boxShadow = "0 0 10px rgba(0, 100, 255, 0.5)";
+      boostButton.style.zIndex = "9999";
+      boostButton.style.cursor = "pointer";
+      boostButton.style.touchAction = "manipulation";
+      document.body.appendChild(boostButton);
+      boostButtonRef.current = boostButton;
+
+      // Add touch event listeners for boost button
+      boostButton.addEventListener("touchstart", () => {
+        setKey("w", true); // Activate forward key
+      });
+
+      boostButton.addEventListener("touchend", () => {
+        setKey("w", false); // Deactivate forward key
+      });
     }
 
     // Create nipple joystick
@@ -99,6 +136,11 @@ export const useTouchControls = () => {
 
       if (joystickContainer) {
         document.body.removeChild(joystickContainer);
+      }
+
+      if (boostButtonRef.current) {
+        document.body.removeChild(boostButtonRef.current);
+        boostButtonRef.current = null;
       }
     };
   }, [setKey]);

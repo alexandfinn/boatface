@@ -5,16 +5,12 @@ import { Controls } from "./Controls";
 import { SplashSystem } from "./SplashSystem";
 import { CoinSystem } from "./CoinSystem";
 import { useKeyboardControls } from "../hooks/useKeyboardControls";
-import { useTouchControls } from "../hooks/useTouchControls";
 import { useBoatStore } from "../store/boatStore";
 import * as THREE from "three";
 
 export const BoatScene: React.FC = () => {
   // Initialize keyboard controls
   useKeyboardControls();
-
-  // Initialize touch controls for mobile devices
-  useTouchControls();
 
   const { keys, position, rotation } = useBoatStore();
 

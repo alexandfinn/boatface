@@ -3,3 +3,10 @@
 ✅ end game early should be in the top left popup 
 ✅ The instructions for wasd and mouse should be only in the initial screen 
 ✅ timer should appear only after 3 2 1 finishes 
+✅ Meta title of page should be Boatface 
+✅ Change title screen to ZeroToShipped (clickable) below that Boatface, below that choose your experience 
+✅ disable any page selection both on desktop and mobile
+✅ on mobile we need a boost button for the boat going forward
+✅ on mobile don't show wasd/mouse instructions
+✅ the initial boat simulator choose your experience clahses with this text: 60-second challenge to collect as many coins as possible!
+✅ replace nipple.js with react-joystick-component - joystick on left side for direction, circular button on right for acceleration

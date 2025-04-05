@@ -13,6 +13,11 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 html,
@@ -48,5 +53,55 @@ body,
   #joystick-container {
     bottom: 50px !important;
     right: 50px !important;
+  }
+}
+
+/* Allow selection for input fields if needed */
+input,
+textarea {
+  -webkit-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
+  -webkit-touch-callout: default;
+}
+
+/* Boost button animation */
+#boost-button {
+  transition: all 0.2s ease;
+}
+
+#boost-button:active {
+  transform: scale(0.9);
+  background-color: rgba(0, 150, 255, 0.9) !important;
+  box-shadow: 0 0 20px rgba(0, 150, 255, 0.8) !important;
+}
+
+@media (max-width: 768px) {
+  #boost-button {
+    bottom: 50px !important;
+    left: 50px !important;
+  }
+}
+
+/* React Joystick Component Styles */
+.react-joystick-container {
+  touch-action: none;
+  z-index: 9999;
+}
+
+/* Override nipple.js styles since we're not using it anymore */
+#joystick-container {
+  display: none;
+}
+
+#boost-button {
+  display: none;
+}
+
+/* Safe area padding for modern iOS devices */
+@supports (padding: max(0px)) {
+  .fixed.bottom-\[50px\] {
+    padding-bottom: max(50px, env(safe-area-inset-bottom));
   }
 }

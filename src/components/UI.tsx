@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useGameStore, GameMode } from "../store/gameStore";
 
 export const UI: React.FC = () => {
@@ -12,6 +12,26 @@ export const UI: React.FC = () => {
     score,
     isCountingDown,
   } = useGameStore();
+
+  // State to detect if using mobile device
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile devices
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile("ontouchstart" in window || window.innerWidth <= 768);
+    };
+
+    // Check on initial load
+    checkMobile();
+
+    // Check on resize
+    window.addEventListener("resize", checkMobile);
+
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+    };
+  }, []);
 
   // Format time remaining as MM:SS
   const formatTime = (seconds: number): string => {
@@ -77,19 +97,32 @@ export const UI: React.FC = () => {
       {!isPlaying && (
         <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
           <div className="bg-black/80 p-8 rounded-lg max-w-md text-center">
-            <h1 className="text-3xl text-white font-bold mb-6">
-              Boat Simulator
-            </h1>
+            {/* Title with ZeroToShipped clickable link */}
+            <div className="mb-4">
+              <a
+                href="https://zerotoshipped.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-3xl text-white font-bold hover:text-yellow-300"
+              >
+                ZeroToShipped
+              </a>
+            </div>
+
+            {/* Boatface title */}
+            <h1 className="text-3xl text-white font-bold mb-2">Boatface</h1>
 
             <h2 className="text-xl text-white font-bold mb-6">
               Choose Your Experience
             </h2>
 
-            {/* Instructions - only visible on initial screen */}
-            <div className="mb-6 text-white text-sm bg-black/50 p-3 rounded-md">
-              <p className="mb-1">Use WASD to move the boat</p>
-              <p>Use mouse to look around</p>
-            </div>
+            {/* Instructions - only visible on initial screen and only on desktop */}
+            {!isMobile && (
+              <div className="mb-6 text-white text-sm bg-black/50 p-3 rounded-md">
+                <p className="mb-1">Use WASD to move the boat</p>
+                <p>Use mouse to look around</p>
+              </div>
+            )}
 
             <div className="flex flex-col gap-6">
               <button
@@ -99,7 +132,7 @@ export const UI: React.FC = () => {
                 🚤 Free Roaming
               </button>
 
-              <div className="relative">
+              <div className="relative mb-28">
                 <button
                   className="w-full px-8 py-5 rounded-md bg-yellow-500 hover:bg-yellow-600 text-white font-bold text-xl"
                   onClick={() => handleStartGame("collect-mrr")}
@@ -107,7 +140,7 @@ export const UI: React.FC = () => {
                   💰 Collect MRR Challenge
                 </button>
 
-                <div className="absolute -bottom-20 left-0 right-0 text-white text-sm bg-black/50 p-3 rounded-md">
+                <div className="absolute top-full left-0 right-0 mt-4 text-white text-sm bg-black/50 p-3 rounded-md">
                   <p className="mb-1">
                     60-second challenge to collect as many coins as possible!
                   </p>
