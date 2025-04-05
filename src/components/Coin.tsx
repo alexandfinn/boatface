@@ -10,6 +10,7 @@ interface CoinProps {
   bobFrequency: number;
   bobPhase: number;
   type?: CoinType;
+  // @ts-ignore - value is used in CoinSystem.tsx when coins are collected
   value?: number;
   timeToLive?: number;
   createdAt?: number;
@@ -21,6 +22,7 @@ export const Coin: React.FC<CoinProps> = ({
   bobFrequency,
   bobPhase,
   type = CoinType.REGULAR,
+  // @ts-ignore - value is used in CoinSystem.tsx when coins are collected
   value = 10,
   timeToLive,
   createdAt,

@@ -49,7 +49,7 @@ export const useTouchControls = () => {
     setKey("d", false);
 
     // Handle joystick move
-    joystick.on("move", (evt: EventData, data: JoystickOutputData) => {
+    joystick.on("move", (_evt: EventData, data: JoystickOutputData) => {
       const angle = data.angle.radian;
       const force = Math.min(data.force, 1.0);
 

@@ -1,9 +1,7 @@
 import React from "react";
-import { useCoinStore } from "../store/coinStore";
 import { useGameStore, GameMode } from "../store/gameStore";
 
 export const UI: React.FC = () => {
-  const { collectedCount } = useCoinStore();
   const {
     mode,
     setMode,
@@ -49,14 +47,20 @@ export const UI: React.FC = () => {
         </a>
       </div>
 
-      {/* Controls help */}
-      <div className="absolute top-4 left-4 mt-12 p-3 bg-black/50 text-white rounded-md">
-        <p>Use WASD to move the boat</p>
-        <p>Use mouse to look around</p>
-      </div>
+      {/* Top left popup - Only shows End Game button during gameplay */}
+      {isPlaying && mode === "collect-mrr" && !isCountingDown && (
+        <div className="absolute top-4 left-4 mt-12 p-3 bg-black/50 text-white rounded-md flex flex-col gap-2">
+          <button
+            className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded-md font-bold text-sm"
+            onClick={endGame}
+          >
+            End Game Early
+          </button>
+        </div>
+      )}
 
-      {/* Top center score and timer display - only in collect-mrr mode */}
-      {isPlaying && mode === "collect-mrr" && (
+      {/* Top center score and timer display - only in collect-mrr mode AND after countdown */}
+      {isPlaying && mode === "collect-mrr" && !isCountingDown && (
         <div className="absolute top-6 left-1/2 transform -translate-x-1/2 flex flex-col items-center">
           <div className="text-3xl font-bold text-yellow-400 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
             ${score} MRR
@@ -80,6 +84,12 @@ export const UI: React.FC = () => {
             <h2 className="text-xl text-white font-bold mb-6">
               Choose Your Experience
             </h2>
+
+            {/* Instructions - only visible on initial screen */}
+            <div className="mb-6 text-white text-sm bg-black/50 p-3 rounded-md">
+              <p className="mb-1">Use WASD to move the boat</p>
+              <p>Use mouse to look around</p>
+            </div>
 
             <div className="flex flex-col gap-6">
               <button
@@ -107,18 +117,6 @@ export const UI: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* Early end button for collect-mrr mode - only shown when not in countdown */}
-      {isPlaying && mode === "collect-mrr" && !isCountingDown && (
-        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
-          <button
-            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md font-bold"
-            onClick={endGame}
-          >
-            End Game Early
-          </button>
         </div>
       )}
 

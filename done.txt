@@ -1,2 +1,5 @@
 ✅ add nipple js for controlling the boat on mobile devices
-✅ in the top left corner add ZeroToShipped.com - The ultimate starter 
+✅ in the top left corner add ZeroToShipped.com - The ultimate starter
+✅ end game early should be in the top left popup 
+✅ The instructions for wasd and mouse should be only in the initial screen 
+✅ timer should appear only after 3 2 1 finishes 

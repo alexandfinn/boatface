@@ -3,7 +3,6 @@ import { useThree, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { useBoatStore } from "../store/boatStore";
 import { useGameStore } from "../store/gameStore";
-import * as THREE from "three";
 
 export const Controls: React.FC = () => {
   const { camera, gl } = useThree();

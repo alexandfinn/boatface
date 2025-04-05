@@ -1,8 +1,8 @@
-- end game early should be in the top left popup
 - the initiali boat simulator choose your experience clahses with  this text: 60-second challenge to collect as many coins as possible!
 Regular Coins: +$10
 
 - Change title screen to ZeroToShipped (clikcable) below that Boatface, below that choose your experience
 - Meta  title of page should be Boatface
-- The instructions for wasd and mouse should be only in the initial screen
-- timer should appear only after 3 2 1 finishes
+- on mobile doths show was/dmouse instructions
+- disable any page selection both on desktop and mobile
+- on mobile we need a boost button for the boat going forward 
